@@ -1,49 +1,32 @@
 import { GraphQLServer } from 'graphql-yoga';
+import axios from 'axios';
 
 const server = new GraphQLServer({
   typeDefs: `
     type Query {
-      agent: User!
-      agents: [User!]
+      post: Post!
+      posts: [Post!]
     }
 
-     type User {
+     type Post {
         id: ID!
-        name: String!
-        age: Int!
-        married: Boolean!
-        average: Float!
+        title: String!
+        author: String!
+
      }
   `,
   resolvers: {
     Query: {
-      agent() {
-        return {
-          id: 1,
-          name: 'Zomer',
-          age: 23,
-          married: true,
-          average: 4.5,
-        };
+      post: async () => {
+        const response = await axios.get('http://localhost:3004/posts/1');
+
+        return response.data;
       },
 
-      agents() {
-        return [
-          {
-            id: 1,
-            name: 'Zomer',
-            age: 23,
-            married: true,
-            average: 4.5,
-          },
-          {
-            id: 2,
-            name: 'Zomer',
-            age: 23,
-            married: true,
-            average: 4.5,
-          },
-        ];
+      posts: async () => {
+        const response = await axios.get('http://localhost:3004/posts');
+
+        return response.data;
       },
     },
   },
